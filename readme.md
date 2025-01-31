@@ -1,183 +1,183 @@
 # Crypto API
 
-Crypto API é uma API desenvolvida em Node.js utilizando Express que permite consultar informações sobre criptomoedas, incluindo lista de moedas disponíveis, preços, histórico de mercado, cotação do dólar e funcionalidades para favoritos e alertas de preço.
+Crypto API is a Node.js-based REST API that provides real-time cryptocurrency data, including price tracking, historical market trends, currency conversion, and user-defined alerts.
 
-## Tecnologias Utilizadas
+## Technologies Used
 
 - Node.js
 - Express
 - Axios
 - Body-Parser
 
-## Instalação
+## Installation
 
-Para instalar e rodar o projeto localmente, siga os passos abaixo:
+To install and run the project locally, follow these steps:
 
-1. Clone este repositório:
+1. Clone this repository:
    ```sh
-   git clone https://github.com/seu-usuario/crypto-api.git
+   git clone https://github.com/your-username/crypto-api.git
    ```
-2. Acesse o diretório do projeto:
+2. Navigate to the project directory:
    ```sh
    cd crypto-api
    ```
-3. Instale as dependências:
+3. Install dependencies:
    ```sh
    npm install
    ```
-4. Inicie o servidor:
+4. Start the server:
    ```sh
    node index.js
    ```
-   O servidor será iniciado na porta **3000**.
+   The server will run on port **3000**.
 
 ## Endpoints
 
-### 1. Obter lista de moedas
+### 1. Get List of Cryptocurrencies
 **GET /**
 
-Retorna uma lista de criptomoedas disponíveis na API.
+Returns a list of available cryptocurrencies.
 
-**Resposta de Exemplo:**
+**Example Response:**
 ```json
 {
-  "moedas_disponiveis": ["bitcoin", "ethereum", "dogecoin"]
+  "available_coins": ["bitcoin", "ethereum", "dogecoin"]
 }
 ```
 
-### 2. Obter preços de criptomoedas
-**POST /precos**
+### 2. Get Cryptocurrency Prices
+**POST /prices**
 
-**Parâmetros:**
+**Request Parameters:**
 ```json
 {
-  "moedas": ["bitcoin", "ethereum"],
-  "moedaBase": "usd"
+  "coins": ["bitcoin", "ethereum"],
+  "baseCurrency": "usd"
 }
 ```
 
-**Resposta de Exemplo:**
+**Example Response:**
 ```json
 {
-  "precos": {
+  "prices": {
     "bitcoin": { "usd": 50000, "usd_24h_change": -2.5 },
     "ethereum": { "usd": 3000, "usd_24h_change": 1.2 }
   }
 }
 ```
 
-### 3. Obter histórico de uma moeda
-**GET /historico/:moeda?dias=30**
+### 3. Get Historical Data
+**GET /history/:coin?days=30**
 
-Obtém o histórico de preços da criptomoeda especificada.
+Fetches the historical price data for the specified cryptocurrency.
 
-**Resposta de Exemplo:**
+**Example Response:**
 ```json
 {
-  "moeda": "bitcoin",
-  "historico": [[1700000000000, 50000], [1700100000000, 51000]]
+  "coin": "bitcoin",
+  "history": [[1700000000000, 50000], [1700100000000, 51000]]
 }
 ```
 
-### 4. Criar um alerta de preço
-**POST /alerta**
+### 4. Set Price Alert
+**POST /alert**
 
-**Parâmetros:**
+**Request Parameters:**
 ```json
 {
-  "moeda": "bitcoin",
-  "preco_desejado": 45000,
-  "email": "usuario@email.com"
+  "coin": "bitcoin",
+  "target_price": 45000,
+  "email": "user@email.com"
 }
 ```
 
-**Resposta:**
+**Response:**
 ```json
 {
-  "status": "Alerta criado",
-  "moeda": "bitcoin",
-  "preco_desejado": 45000
+  "status": "Alert created",
+  "coin": "bitcoin",
+  "target_price": 45000
 }
 ```
 
-### 5. Adicionar moedas aos favoritos
-**POST /favoritos**
+### 5. Manage Favorite Coins
+**POST /favorites**
 
-**Parâmetros:**
+**Request Parameters:**
 ```json
 {
-  "usuario_id": "12345",
-  "moedas": ["bitcoin", "ethereum"]
+  "user_id": "12345",
+  "coins": ["bitcoin", "ethereum"]
 }
 ```
 
-**Resposta:**
+**Response:**
 ```json
 {
-  "status": "Favoritos atualizados",
-  "favoritos": ["bitcoin", "ethereum"]
+  "status": "Favorites updated",
+  "favorites": ["bitcoin", "ethereum"]
 }
 ```
 
-### 6. Obter moedas favoritas
-**GET /favoritos/:usuario_id**
+### 6. Retrieve Favorite Coins
+**GET /favorites/:user_id**
 
-Retorna as moedas favoritas do usuário.
+Returns the favorite cryptocurrencies for a user.
 
-**Resposta de Exemplo:**
+**Example Response:**
 ```json
 {
-  "usuario_id": "12345",
-  "favoritos": ["bitcoin", "ethereum"]
+  "user_id": "12345",
+  "favorites": ["bitcoin", "ethereum"]
 }
 ```
 
-### 7. Comparar moedas
-**POST /comparar**
+### 7. Compare Cryptocurrency Prices
+**POST /compare**
 
-**Parâmetros:**
+**Request Parameters:**
 ```json
 {
-  "moedas": ["bitcoin", "ethereum"]
+  "coins": ["bitcoin", "ethereum"]
 }
 ```
 
-**Resposta:**
+**Response:**
 ```json
 {
-  "comparacao": {
+  "comparison": {
     "bitcoin": { "usd": 50000 },
     "ethereum": { "usd": 3000 }
   }
 }
 ```
 
-### 8. Obter cotação do dólar
-**GET /cotacao**
+### 8. Get USD to BRL Exchange Rate
+**GET /exchange-rate**
 
-Obtém a cotação do dólar em relação ao real.
+Fetches the exchange rate of the US Dollar against the Brazilian Real.
 
-**Resposta:**
+**Response:**
 ```json
 {
-  "cotacao_dolar": 5.20
+  "dollar_exchange_rate": 5.20
 }
 ```
 
-## Contribuição
+## Contribution
 
-Sinta-se à vontade para contribuir com melhorias para este projeto! Para isso:
-1. Faça um fork do repositório.
-2. Crie um branch para suas modificações: `git checkout -b minha-mudanca`
-3. Commit suas alterações: `git commit -m "Minha melhoria"`
-4. Faça um push para o branch: `git push origin minha-mudanca`
-5. Abra um Pull Request.
+Feel free to contribute to this project! To do so:
+1. Fork the repository.
+2. Create a branch for your changes: `git checkout -b my-change`
+3. Commit your changes: `git commit -m "My improvement"`
+4. Push to the branch: `git push origin my-change`
+5. Open a Pull Request.
 
-## Licença
+## License
 
-Este projeto está sob a licença MIT. Para mais informações, consulte o arquivo LICENSE.
+This project is licensed under the MIT License. See the LICENSE file for details.
 
 ---
 
-Se precisar de alguma alteração ou melhorias na documentação, é só avisar!
+If you need any modifications or improvements to the documentation, just let me know!
 
