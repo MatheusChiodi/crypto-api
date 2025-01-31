@@ -7,120 +7,120 @@ const PORT = 3000;
 app.use(express.json());
 app.use(bodyParser.json());
 
-let favoritos = {};
-let alertas = [];
+let favorites = {};
+let alerts = [];
 
-const obterListaMoedas = async () => {
+const getCoinList = async () => {
   try {
     const response = await axios.get(
       'https://api.coingecko.com/api/v3/coins/list'
     );
     return response.data;
   } catch (error) {
-    console.error('Erro ao obter lista de moedas:', error);
+    console.error('Error fetching coin list:', error);
     return null;
   }
 };
 
-const obterPrecos = async (moedas, moedaBase = 'usd') => {
+const getPrices = async (coins, baseCurrency = 'usd') => {
   try {
     const response = await axios.get(
       'https://api.coingecko.com/api/v3/simple/price',
       {
         params: {
-          ids: moedas.join(','),
-          vs_currencies: moedaBase,
+          ids: coins.join(','),
+          vs_currencies: baseCurrency,
           include_24hr_change: 'true',
         },
       }
     );
     return response.data;
   } catch (error) {
-    console.error('Erro ao obter preços:', error);
+    console.error('Error fetching prices:', error);
     return null;
   }
 };
 
-const obterCotacaoDolar = async () => {
+const getDollarExchangeRate = async () => {
   try {
     const response = await axios.get(
       'https://economia.awesomeapi.com.br/json/last/USD-BRL'
     );
     return parseFloat(response.data.USDBRL.bid);
   } catch (error) {
-    console.error('Erro ao obter cotação do dólar:', error);
+    console.error('Error fetching dollar exchange rate:', error);
     return null;
   }
 };
 
 app.get('/', async (req, res) => {
-  const listaMoedas = await obterListaMoedas();
-  if (!listaMoedas)
-    return res.status(500).json({ error: 'Erro ao obter lista de moedas.' });
-  res.json({ moedas_disponiveis: listaMoedas.map((moeda) => moeda.id) });
+  const coinList = await getCoinList();
+  if (!coinList)
+    return res.status(500).json({ error: 'Error fetching coin list.' });
+  res.json({ available_coins: coinList.map((coin) => coin.id) });
 });
 
-app.post('/precos', async (req, res) => {
-  const { moedas, moedaBase } = req.body;
-  if (!moedas || !Array.isArray(moedas) || moedas.length === 0) {
+app.post('/prices', async (req, res) => {
+  const { coins, baseCurrency } = req.body;
+  if (!coins || !Array.isArray(coins) || coins.length === 0) {
     return res
       .status(400)
-      .json({ error: 'Envie uma lista de criptomoedas válida.' });
+      .json({ error: 'Provide a valid list of cryptocurrencies.' });
   }
 
-  const precos = await obterPrecos(moedas, moedaBase || 'usd');
-  if (!precos) return res.status(500).json({ error: 'Erro ao obter preços.' });
+  const prices = await getPrices(coins, baseCurrency || 'usd');
+  if (!prices) return res.status(500).json({ error: 'Error fetching prices.' });
 
-  res.json({ precos });
+  res.json({ prices });
 });
 
-app.get('/historico/:moeda', async (req, res) => {
-  const { moeda } = req.params;
-  const { dias = 30 } = req.query;
+app.get('/history/:coin', async (req, res) => {
+  const { coin } = req.params;
+  const { days = 30 } = req.query;
   try {
     const response = await axios.get(
-      `https://api.coingecko.com/api/v3/coins/${moeda}/market_chart`,
+      `https://api.coingecko.com/api/v3/coins/${coin}/market_chart`,
       {
-        params: { vs_currency: 'usd', days: dias },
+        params: { vs_currency: 'usd', days: days },
       }
     );
-    res.json({ moeda, historico: response.data.prices });
+    res.json({ coin, history: response.data.prices });
   } catch (error) {
-    res.status(500).json({ error: 'Erro ao obter histórico da moeda.' });
+    res.status(500).json({ error: 'Error fetching coin history.' });
   }
 });
 
-app.post('/alerta', (req, res) => {
-  const { moeda, preco_desejado, email } = req.body;
-  alertas.push({ moeda, preco_desejado, email });
-  res.json({ status: 'Alerta criado', moeda, preco_desejado });
+app.post('/alert', (req, res) => {
+  const { coin, target_price, email } = req.body;
+  alerts.push({ coin, target_price, email });
+  res.json({ status: 'Alert created', coin, target_price });
 });
 
-app.post('/favoritos', (req, res) => {
-  const { usuario_id, moedas } = req.body;
-  favoritos[usuario_id] = moedas;
-  res.json({ status: 'Favoritos atualizados', favoritos: moedas });
+app.post('/favorites', (req, res) => {
+  const { user_id, coins } = req.body;
+  favorites[user_id] = coins;
+  res.json({ status: 'Favorites updated', favorites: coins });
 });
 
-app.get('/favoritos/:usuario_id', (req, res) => {
-  const { usuario_id } = req.params;
-  res.json({ usuario_id, favoritos: favoritos[usuario_id] || [] });
+app.get('/favorites/:user_id', (req, res) => {
+  const { user_id } = req.params;
+  res.json({ user_id, favorites: favorites[user_id] || [] });
 });
 
-app.post('/comparar', async (req, res) => {
-  const { moedas } = req.body;
-  if (!moedas || !Array.isArray(moedas) || moedas.length < 2) {
+app.post('/compare', async (req, res) => {
+  const { coins } = req.body;
+  if (!coins || !Array.isArray(coins) || coins.length < 2) {
     return res
       .status(400)
-      .json({ error: 'Envie ao menos duas criptomoedas para comparação.' });
+      .json({ error: 'Provide at least two cryptocurrencies for comparison.' });
   }
-  const precos = await obterPrecos(moedas);
-  res.json({ comparacao: precos });
+  const prices = await getPrices(coins);
+  res.json({ comparison: prices });
 });
 
-app.get('/cotacao', async (req, res) => {
-  const cotacaoDolar = await obterCotacaoDolar();
-  res.json({ cotacao_dolar: cotacaoDolar });
+app.get('/exchange-rate', async (req, res) => {
+  const dollarExchangeRate = await getDollarExchangeRate();
+  res.json({ dollar_exchange_rate: dollarExchangeRate });
 });
 
-app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
