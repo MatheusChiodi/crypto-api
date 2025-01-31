@@ -34,11 +34,13 @@ To install and run the project locally, follow these steps:
 ## Endpoints
 
 ### 1. Get List of Cryptocurrencies
-**GET /**
+
+**GET /coins**
 
 Returns a list of available cryptocurrencies.
 
 **Example Response:**
+
 ```json
 {
   "available_coins": ["bitcoin", "ethereum", "dogecoin"]
@@ -46,9 +48,11 @@ Returns a list of available cryptocurrencies.
 ```
 
 ### 2. Get Cryptocurrency Prices
-**POST /prices**
+
+**POST /coins/prices**
 
 **Request Parameters:**
+
 ```json
 {
   "coins": ["bitcoin", "ethereum"],
@@ -57,6 +61,7 @@ Returns a list of available cryptocurrencies.
 ```
 
 **Example Response:**
+
 ```json
 {
   "prices": {
@@ -67,22 +72,29 @@ Returns a list of available cryptocurrencies.
 ```
 
 ### 3. Get Historical Data
-**GET /history/:coin?days=30**
+
+**GET /coins/history/:coin?days=30**
 
 Fetches the historical price data for the specified cryptocurrency.
 
 **Example Response:**
+
 ```json
 {
   "coin": "bitcoin",
-  "history": [[1700000000000, 50000], [1700100000000, 51000]]
+  "history": [
+    [1700000000000, 50000],
+    [1700100000000, 51000]
+  ]
 }
 ```
 
 ### 4. Set Price Alert
-**POST /alert**
+
+**POST /alerts**
 
 **Request Parameters:**
+
 ```json
 {
   "coin": "bitcoin",
@@ -92,6 +104,7 @@ Fetches the historical price data for the specified cryptocurrency.
 ```
 
 **Response:**
+
 ```json
 {
   "status": "Alert created",
@@ -101,9 +114,11 @@ Fetches the historical price data for the specified cryptocurrency.
 ```
 
 ### 5. Manage Favorite Coins
+
 **POST /favorites**
 
 **Request Parameters:**
+
 ```json
 {
   "user_id": "12345",
@@ -112,6 +127,7 @@ Fetches the historical price data for the specified cryptocurrency.
 ```
 
 **Response:**
+
 ```json
 {
   "status": "Favorites updated",
@@ -120,11 +136,13 @@ Fetches the historical price data for the specified cryptocurrency.
 ```
 
 ### 6. Retrieve Favorite Coins
+
 **GET /favorites/:user_id**
 
 Returns the favorite cryptocurrencies for a user.
 
 **Example Response:**
+
 ```json
 {
   "user_id": "12345",
@@ -133,9 +151,11 @@ Returns the favorite cryptocurrencies for a user.
 ```
 
 ### 7. Compare Cryptocurrency Prices
+
 **POST /compare**
 
 **Request Parameters:**
+
 ```json
 {
   "coins": ["bitcoin", "ethereum"]
@@ -143,6 +163,7 @@ Returns the favorite cryptocurrencies for a user.
 ```
 
 **Response:**
+
 ```json
 {
   "comparison": {
@@ -152,21 +173,10 @@ Returns the favorite cryptocurrencies for a user.
 }
 ```
 
-### 8. Get USD to BRL Exchange Rate
-**GET /exchange-rate**
-
-Fetches the exchange rate of the US Dollar against the Brazilian Real.
-
-**Response:**
-```json
-{
-  "dollar_exchange_rate": 5.20
-}
-```
-
 ## Contribution
 
 Feel free to contribute to this project! To do so:
+
 1. Fork the repository.
 2. Create a branch for your changes: `git checkout -b my-change`
 3. Commit your changes: `git commit -m "My improvement"`
@@ -180,4 +190,3 @@ This project is licensed under the MIT License. See the LICENSE file for details
 ---
 
 If you need any modifications or improvements to the documentation, just let me know!
-
